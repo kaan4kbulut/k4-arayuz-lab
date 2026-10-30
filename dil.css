@@ -1,0 +1,37 @@
+/* k4 TASARIM DİLİ — KİLİTLİ (Kaan onayı 26 Eki 2026). Tek kaynak: tüm arayüz, pencereler, terminal ve hazır uygulamalar
+   (Dosyalar, Cockpit…) renklerini yalnızca buradaki belirteçlerden alır. Değiştirme; yalnızca Kaan onayıyla EKLEME yapılır.
+   İki stil: Retro (data-arayuz="retro": tüp, piksel, kare köşe) · Modern (data-arayuz="canli": yaylı hareket, yumuşak köşe).
+   Palet: Orion (daha koyu) · ID350 (daha açık) — aynı tasarımın iki hâli, birbirinin tersi değil:
+   kömür yüzeyler + adaçayı + tek turuncu vurgu; açıkta zemin adaçayı, yazı neredeyse siyah. */
+
+/* Daha koyu · Orion */
+html[data-tema="koyu"][data-arayuz] {
+  color-scheme: dark;
+  --bg: #121413; --fg: #eef0ea; --dim: #8e978f; --glow: rgba(238, 240, 234, .26);
+  --accent: #ff5a1f; --accent-fg: #ffffff;
+  --surface: rgba(31, 35, 33, .96); --surface2: rgba(238, 240, 234, .05); --line: rgba(238, 240, 234, .14); --line2: rgba(238, 240, 234, .07);
+  --sel: rgba(255, 90, 31, .32); --ok: #a9d4b0; --warn: #e8a33a; --err: #e0665a; --info: #c8dccb;
+  --t-black: #2a2e2c; --t-blue: #9fb8c8; --t-magenta: #7f9c8a; --t-cyan: #c8dccb;
+  --scan: rgba(0, 0, 0, .07); --vignette: rgba(0, 0, 0, .5); --shadow: rgba(0, 0, 0, .55);
+  --case-a: #2a2e2c; --case-b: #161817; --case-c: #090a0a; --case-rim: #1d201e; --page: #0b0c0c;
+  --k-sage: #c8dccb; --k-wire: #c8dccb; --k-wire2: #7f9c8a; --k-wire-off: #3a403c;
+}
+/* Daha açık · ID350 */
+html[data-tema="acik"][data-arayuz] {
+  color-scheme: light;
+  --bg: #dbe7dc; --fg: #0e100f; --dim: #46524a; --glow: rgba(14, 16, 15, .08);
+  --accent: #e4501b; --accent-fg: #ffffff;
+  --surface: rgba(238, 244, 238, .97); --surface2: rgba(14, 16, 15, .05); --line: rgba(14, 16, 15, .2); --line2: rgba(14, 16, 15, .1);
+  --sel: rgba(255, 90, 31, .26); --ok: #2b7a46; --warn: #a85f00; --err: #b8321f; --info: #1f2321;
+  --t-black: #1f2321; --t-blue: #2f5f7a; --t-magenta: #4f6f5b; --t-cyan: #1f2321;
+  --scan: rgba(31, 35, 33, .035); --vignette: rgba(31, 35, 33, .16); --shadow: rgba(31, 35, 33, .2);
+  --case-a: #c9d6ca; --case-b: #aebfb0; --case-c: #93a596; --case-rim: #a3b4a5; --page: #c4d3c5;
+  --k-sage: #c8dccb; --k-wire: #1f2321; --k-wire2: #4f6f5b; --k-wire-off: #a3b6a7;
+}
+/* İki hâlde de aynı: düğüm ve kumanda yüzeyleri kömür (ID350/Orion kartları gibi) */
+html[data-arayuz] {
+  --k-tile: #1f2321; --k-tile2: #2a2f2c; --k-tile-fg: #eef0ea; --k-tile-dim: #9aa39b; --k-tile-line: #3a403c; --k-or: #ff5a1f;
+}
+/* Yazı: Retro = VT323 + JetBrains Mono · Modern = Archivo başlık + JetBrains Mono */
+html[data-arayuz="canli"] { --head: "Archivo", "JetBrains Mono", ui-sans-serif, sans-serif; }
+html[data-arayuz="retro"] { --head: "VT323", "JetBrains Mono", monospace; }

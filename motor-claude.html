@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="tr" data-tema="koyu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>K4 · Arayüz Önerisi: Düzeltme ve Baştan Tasarım</title>
+<style>
+:root{
+  --bg:#121413;--bg2:#181b1a;--sf:#1f2321;--sf2:#262b28;--fg:#eef0ea;--dim:#8e978f;--line:rgba(238,240,234,.12);
+  --ac:#ff5a1f;--acfg:#fff;--sage:#c8dccb;--ok:#a9d4b0;--warn:#e8a33a;--err:#e0665a;--blue:#9fb8c8;
+  --r:12px;--f:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,Roboto,sans-serif;--m:ui-monospace,"JetBrains Mono",Menlo,monospace;
+}
+[data-tema=acik]{--bg:#e9f0ea;--bg2:#dbe7dc;--sf:#f3f7f3;--sf2:#e4ece5;--fg:#0e100f;--dim:#4a564e;--line:rgba(14,16,15,.18);--ac:#e4501b;--sage:#3f6a4e;--ok:#2b7a46;--warn:#a85f00;--err:#b8321f;--blue:#2f5f7a}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.55 var(--f);background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased}
+a{color:var(--ac)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+/* üst kontrol */
+.ust{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.ust .wrap{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.logo{font-weight:800;letter-spacing:-.02em;font-size:18px}.logo b{color:var(--ac)}
+.grp{display:inline-flex;background:var(--sf);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.grp button{all:unset;cursor:pointer;padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;color:var(--dim);min-height:20px}
+.grp button[aria-pressed=true]{background:var(--ac);color:var(--acfg)}
+.grp button:focus-visible{outline:2px solid var(--sage);outline-offset:2px}
+.sp{flex:1}
+h1{font-size:clamp(28px,5vw,48px);line-height:1.08;letter-spacing:-.03em;margin:44px 0 14px;max-width:18ch}
+h1 em{font-style:normal;color:var(--ac)}
+h2{font-size:clamp(22px,3vw,30px);letter-spacing:-.02em;margin:48px 0 8px}
+h3{font-size:16px;margin:0 0 6px}
+.lead{color:var(--dim);max-width:70ch;font-size:17px}
+.kart{background:var(--sf);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:18px}
+.etiket{display:inline-block;font:600 11px var(--m);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:var(--sf2);color:var(--dim);border:1px solid var(--line)}
+.etiket.ac{background:var(--ac);color:var(--acfg);border-color:transparent}
+.etiket.ok{color:var(--ok)}.etiket.er{color:var(--err)}
+ul.l{padding-left:18px;color:var(--dim)}ul.l li{margin:4px 0}ul.l b{color:var(--fg)}
+.no{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ac);color:#fff;font:700 11px var(--f);flex:none}
+/* sahne */
+.sahne{display:grid;gap:26px;margin-top:20px}
+.cift{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:22px}
+.etk{font:600 12px var(--m);color:var(--dim);margin:0 0 8px;display:flex;gap:8px;align-items:center}
+.not{margin-top:10px;font-size:13.5px;color:var(--dim)}.not p{display:flex;gap:8px;margin:5px 0}
+/* görünürlük */
+[data-opt]{display:none}
+body[data-opt="1"] [data-opt~="1"],body[data-opt="2"] [data-opt~="2"]{display:block}
+body[data-dev="masaustu"] [data-dev~="tel"]{display:none!important}
+body[data-dev="telefon"] [data-dev~="masa"]{display:none!important}
+/* ===== maketler ===== */
+.pc{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg);height:470px;display:grid;font-size:11px;position:relative;box-shadow:0 20px 50px -25px #000}
+.pc *{min-width:0}
+.ph{width:250px;height:500px;border:6px solid #2b2f2d;border-radius:34px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;font-size:11px;margin:0 auto;position:relative;box-shadow:0 20px 50px -25px #000}
+.ph::before{content:"";position:absolute;top:6px;left:50%;width:60px;height:5px;border-radius:9px;background:#2b2f2d;transform:translateX(-50%);z-index:3}
+.phrow{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.phcol{width:250px}
+.tag{font:600 9px var(--m);padding:1px 5px;border-radius:4px;background:var(--sf2);color:var(--dim);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;flex:none}
+.dot.w{background:var(--warn)}.dot.e{background:var(--err)}.dot.a{background:var(--ac)}
+.mut{color:var(--dim)}
+.ikon{width:22px;height:22px;border-radius:6px;background:var(--sf2);display:grid;place-items:center;font-size:11px;flex:none}
+.ikon.on{background:var(--ac);color:#fff}
+.bar{height:1px;background:var(--line)}
+.prog{height:5px;border-radius:9px;background:var(--sf2);overflow:hidden}.prog i{display:block;height:100%;background:var(--ac)}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:7px;background:var(--sf2);border:1px solid var(--line);font-size:10.5px;font-weight:600}
+.btn.p{background:var(--ac);color:#fff;border-color:transparent}
+.chip{display:inline-flex;gap:4px;align-items:center;padding:2px 8px;border-radius:99px;border:1px solid var(--line);font-size:10px;background:var(--sf)}
+.bub{padding:7px 9px;border-radius:10px;background:var(--sf);border:1px solid var(--line);line-height:1.45}
+.bub.me{background:var(--ac);color:#fff;border:0;margin-left:auto;max-width:80%}
+.mono{font-family:var(--m)}
+/* ESKİ */
+.eski{grid-template-rows:16px 1fr 14px;filter:saturate(.7)}
+.eski .mn{background:var(--sf);display:flex;gap:9px;padding:2px 8px;color:var(--dim);font-size:9px;border-bottom:1px solid var(--line)}
+.eski .ic{display:grid;grid-template-columns:26px 112px 1fr 130px;min-height:0}
+.eski .ic>div{padding:6px;border-right:1px solid var(--line);overflow:hidden}
+.eski .act{display:flex;flex-direction:column;gap:7px;align-items:center;background:var(--sf)}
+.eski .act i{width:12px;height:12px;border-radius:3px;background:var(--dim);opacity:.6}
+.eski .ort{display:grid;grid-template-rows:16px 1fr 70px;padding:0!important}
+.eski .ort>*{padding:4px 8px}
+.eski .harita{position:relative;background:radial-gradient(var(--line) 1px,transparent 1px) 0 0/12px 12px}
+.eski .harita b{position:absolute;width:44px;height:16px;border-radius:4px;background:var(--sf2);border:1px solid var(--line);font:500 7px var(--m);padding:2px;color:var(--dim)}
+.eski .st{background:var(--ac);color:#fff;font-size:8px;padding:1px 8px;display:flex;gap:10px}
+.tn{padding:2px 0;color:var(--dim);font-size:9.5px;white-space:nowrap;overflow:hidden;text-overlow:ellipsis}
+/* DÜZELTİLMİŞ */
+.duz{grid-template-rows:34px 1fr 22px}
+.duz .top{display:flex;align-items:center;gap:10px;padding:0 10px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.duz .pal{flex:1;max-width:300px;margin:0 auto;height:22px;border-radius:7px;border:1px solid var(--line);background:var(--sf);display:flex;align-items:center;padding:0 8px;color:var(--dim);gap:6px}
+.duz .gv{display:grid;grid-template-columns:62px 130px 1fr 190px;min-height:0}
+.duz .gv>div{border-right:1px solid var(--line);min-height:0;overflow:hidden}
+.duz .rail{display:flex;flex-direction:column;gap:4px;padding:6px 4px;background:var(--bg2)}
+.duz .rail div{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 0;border-radius:8px;font-size:8.5px;color:var(--dim)}
+.duz .rail div.on{background:var(--sf2);color:var(--fg);box-shadow:inset 2px 0 var(--ac)}
+.duz .sd{padding:8px;background:var(--bg2)}
+.duz .ed{display:grid;grid-template-rows:26px 1fr;}
+.duz .tabs{display:flex;gap:2px;padding:4px 6px 0;border-bottom:1px solid var(--line)}
+.duz .tabs span{padding:4px 9px;border-radius:7px 7px 0 0;color:var(--dim)}
+.duz .tabs span.on{background:var(--sf);color:var(--fg);box-shadow:inset 0 2px var(--ac)}
+.duz .harita{position:relative;margin:8px;border-radius:10px;border:1px solid var(--line);background:radial-gradient(var(--line) 1px,transparent 1px) 0 0/14px 14px;overflow:hidden}
+.duz .harita b{position:absolute;padding:4px 7px;border-radius:7px;background:var(--sf);border:1px solid var(--line);font:600 9px var(--f)}
+.duz .harita b.on{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 25%,transparent)}
+.duz .nr{padding:8px;display:flex;flex-direction:column;gap:6px;background:var(--bg2)}
+.duz .stt{display:flex;gap:12px;align-items:center;padding:0 10px;background:var(--bg2);border-top:1px solid var(--line);color:var(--dim)}
+/* YENİ masaüstü */
+.yeni{grid-template-columns:64px minmax(0,1fr) 270px}
+.yeni .rl{background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0}
+.yeni .av{width:34px;height:34px;border-radius:12px;background:conic-gradient(from 200deg,var(--ac),var(--sage),var(--ac));display:grid;place-items:center;color:#121413;font-weight:900;font-size:15px;margin-bottom:6px}
+.yeni .rl .ikon{width:34px;height:34px;font-size:14px;border-radius:10px;position:relative}
+.yeni .rl .ikon em{position:absolute;top:-3px;right:-3px;background:var(--ac);color:#fff;font:700 8px var(--f);padding:0 4px;border-radius:99px;font-style:normal}
+.yeni .mer{display:grid;grid-template-rows:auto 1fr auto;min-height:0}
+.yeni .mer>.hd{padding:12px 18px 8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.yeni .hd h4{font-size:16px;letter-spacing:-.02em;margin-right:auto}
+.yeni .akis{padding:6px 18px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.is{background:var(--sf);border:1px solid var(--line);border-radius:12px;padding:9px;display:grid;gap:6px}
+.is .hr{display:flex;gap:6px;align-items:center}
+.diff{font:9px/1.5 var(--m);background:var(--bg);border-radius:8px;padding:5px 7px;border:1px solid var(--line)}
+.diff .a{color:var(--ok)}.diff .s{color:var(--err)}
+.kmp{margin:8px 14px 12px;border:1px solid var(--line);background:var(--sf);border-radius:14px;padding:8px 10px;display:grid;gap:7px}
+.kmp .r{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.yeni .sg{border-left:1px solid var(--line);background:var(--bg2);padding:12px;display:flex;flex-direction:column;gap:9px;overflow:hidden}
+.sg h5{font:700 9px var(--m);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.sg .k{background:var(--sf);border:1px solid var(--line);border-radius:9px;padding:6px 8px;display:grid;gap:3px}
+.halka{width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--ac) 0 62%,var(--sf2) 0);display:grid;place-items:center;flex:none}
+.halka::after{content:"62%";width:42px;height:42px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;font-weight:800;font-size:11px}
+/* telefon parçaları */
+.pt{padding:16px 12px 6px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+.pgv{flex:1;overflow:hidden;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0}
+.dock{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border-top:1px solid var(--line);background:var(--bg2);padding:5px 4px 12px}
+.dock div{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 0;font-size:9px;color:var(--dim);border-radius:10px;min-height:44px;justify-content:center}
+.dock div.on{color:var(--fg);background:var(--sf2)}
+.dock div span{font-size:15px}
+.mic{width:34px;height:34px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--sf);border-radius:18px 18px 0 0;border-top:1px solid var(--line);padding:8px 12px 14px;box-shadow:0 -20px 40px -10px #000a;display:grid;gap:6px}
+.sheet::before{content:"";width:34px;height:4px;border-radius:9px;background:var(--line);margin:0 auto 4px}
+.fab{position:absolute;right:12px;bottom:70px;width:42px;height:42px;border-radius:14px;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 20px -6px var(--ac)}
+.seg{display:flex;background:var(--sf);border-radius:9px;padding:2px;border:1px solid var(--line)}
+.seg span{flex:1;text-align:center;padding:5px 0;border-radius:7px;color:var(--dim);font-weight:600;font-size:10px}
+.seg span.on{background:var(--ac);color:#fff}
+/* tablo */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 11px var(--m);text-transform:uppercase;letter-spacing:.07em;color:var(--dim)}
+.sar{overflow-x:auto}
+footer{margin:60px 0 40px;color:var(--dim);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:760px){.pc{height:auto;min-height:0;overflow-x:auto;display:block}.pc>*{min-width:640px}.pcs{overflow-x:auto}}
+@media (prefers-reduced-motion:no-preference){.kart,.pc,.ph{transition:transform .2s}.pc:hover,.ph:hover{transform:translateY(-2px)}}
+</style>
+</head>
+<body data-opt="1" data-dev="ikisi">
+
+<div class="ust"><div class="wrap">
+  <div class="logo">K<b>4</b> <span class="mut" style="font-weight:500;font-size:13px">· arayüz önerisi</span></div>
+  <div class="grp" role="group" aria-label="Seçenek">
+    <button aria-pressed="true" data-set="opt" data-v="1">1 · Mevcut Düzeltme</button>
+    <button aria-pressed="false" data-set="opt" data-v="2">2 · Baştan Tasarım</button>
+  </div>
+  <div class="grp" role="group" aria-label="Cihaz">
+    <button aria-pressed="true" data-set="dev" data-v="ikisi">İkisi</button>
+    <button aria-pressed="false" data-set="dev" data-v="masaustu">Masaüstü</button>
+    <button aria-pressed="false" data-set="dev" data-v="telefon">Telefon</button>
+  </div>
+  <div class="sp"></div>
+  <button class="grp" style="all:unset;cursor:pointer;padding:7px 12px;border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:600" id="tema">◐ Tema</button>
+</div></div>
+
+<div class="wrap">
+  <h1>K4 bir kod editörü değil; <em>Nare ile çalışma masası.</em></h1>
+  <p class="lead">Önce <code>static/calisma.html</code> ve <code>dil.css</code> içindeki yapıya baktım: menü çubuğu, etkinlik çubuğu, birincil yan çubuk, editör sekmeleri, içerik haritası, alt panel, sağda Nare, durum çubuğu ve telefonda alt gezinme. Yani bir <b>VS Code kalıbı</b>. Renk dili (koyu yeşilimsi zemin, <span style="color:var(--ac)">#ff5a1f</span> turuncu vurgu, adaçayı #c8dccb) güçlü ve korunmaya değer. Sorun kabuğun metaforunda.</p>
+
+  <div class="g3">
+    <div class="kart"><span class="etiket er">Teşhis</span><h3 style="margin-top:10px">Yanlış metafor</h3>
+      <p class="mut">Kaan'ın asıl işi dosya düzenlemek değil. İş vermek, kuyruğu görmek, kanıtı onaylamak ve kotayı yönetmek. Editör kabuğu bu akışı 5 panele bölüyor, asıl muhatap Nare ise sağ kenarda dar bir sütunda kalıyor.</p></div>
+    <div class="kart"><span class="etiket er">Teşhis</span><h3 style="margin-top:10px">Chrome fazla, bilgi az</h3>
+      <p class="mut">Menü çubuğu, sekmeler, kırıntı, alt panel ve durum çubuğu ekranın büyük kısmını alıyor. Üstelik Pano, Fabrika ve Kota gibi canlı bilgiler gömülü kalıyor. 300 KB'lık tek HTML dosyası da bakımı zorlaştırıyor.</p></div>
+    <div class="kart"><span class="etiket er">Teşhis</span><h3 style="margin-top:10px">Telefon masaüstünün küçültülmüşü</h3>
+      <p class="mut">Telefonda alt çubuk var ama düzen aynı panellerin sıkıştırılmış hâli. Dokunma hedefleri küçük, ses ve onay gibi telefonda doğal işler arka planda.</p></div>
+  </div>
+
+  <!-- ================= SEÇENEK 1 ================= -->
+  <section data-opt="1">
+    <h2>1 · Mevcut arayüzü düzeltmek</h2>
+    <p class="lead">İskeleti ve alışkanlıkları bozmadan, <b>üç büyük hamle</b> ve bir dizi küçük cilayla: <b>(a)</b> kabuğu inceltmek, <b>(b)</b> Nare'yi ikinci sınıf paneldan birinci sınıf bölgeye taşımak, <b>(c)</b> telefonu gerçekten telefon yapmak.</p>
+
+    <div class="sahne">
+      <div data-dev="masa">
+        <div class="cift">
+          <div class="pcs">
+            <p class="etk"><span class="etiket er">ÖNCE</span> Masaüstü (mevcut yapı, şematik)</p>
+            <div class="pc eski">
+              <div class="mn"><span>Dosya</span><span>Düzen</span><span>Görünüm</span><span>Git</span><span>Çalıştır</span><span>Terminal</span><span>Yardım</span></div>
+              <div class="ic">
+                <div class="act"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div><div class="tn">▸ gelistirme</div><div class="tn">▸ kuyruk</div><div class="tn">▾ static</div><div class="tn">&nbsp;&nbsp;calisma.html</div><div class="tn">&nbsp;&nbsp;dil.css</div><div class="tn">▸ ofis_motoru</div></div>
+                <div class="ort"><div class="mut mono">calisma.html × &nbsp; PANO.md × &nbsp; kuyruk × </div>
+                  <div class="harita"><b style="left:20px;top:14px">pano</b><b style="left:90px;top:40px">nare</b><b style="left:30px;top:80px">ofis</b><b style="left:140px;top:90px">kota</b></div>
+                  <div class="mut mono" style="border-top:1px solid var(--line)">TERMİNAL · ÇIKTI · SORUNLAR<br>$ pano siradaki</div></div>
+                <div><span class="tag">NARE</span><div class="tn" style="margin-top:6px;white-space:normal">Merhaba Kaan…</div></div>
+              </div>
+              <div class="st"><span>main</span><span>0 ⚠</span><span>UTF-8</span></div>
+            </div>
+          </div>
+          <div class="pcs">
+            <p class="etk"><span class="etiket ok">SONRA</span> Masaüstü (düzeltilmiş)</p>
+            <div class="pc duz">
+              <div class="top"><span class="logo" style="font-size:13px">K<b>4</b></span>
+                <div class="pal"><span>⌘K</span><span>Ara, komut ver ya da Nare'ye sor…</span></div>
+                <span class="chip"><i class="dot"></i>Monster</span><span class="chip"><i class="dot"></i>Lenovo</span></div>
+              <div class="gv">
+                <div class="rail">
+                  <div class="on"><span>🧠</span>Nare</div><div><span>📋</span>Pano</div><div><span>🏢</span>Ofis</div><div><span>🏭</span>Fabrika</div><div><span>⚡</span>Kota</div><div><span>🛡️</span>Sistem</div>
+                </div>
+                <div class="sd"><h5 class="mut mono" style="margin-bottom:6px">BU BÖLÜMDE</h5>
+                  <div class="is" style="margin-bottom:5px"><b>Nare oturumları</b><span class="mut">3 aktif</span></div>
+                  <div class="is" style="margin-bottom:5px"><b>Uzman rolleri</b><span class="mut">10 rol</span></div>
+                  <div class="is"><b>Harness geçmişi</b><span class="mut">son 24 sa</span></div></div>
+                <div class="ed">
+                  <div class="tabs"><span class="on">İçerik haritası</span><span>PANO.md</span><span>Kuyruk</span></div>
+                  <div class="harita" style="min-height:150px"><b class="on" style="left:20px;top:16px">Nare</b><b style="left:110px;top:56px">Pano</b><b style="left:30px;top:92px">Ofis</b><b style="left:160px;top:108px">Kota</b></div>
+                </div>
+                <div class="nr">
+                  <div style="display:flex;gap:6px;align-items:center"><span class="ikon on">N</span><b>Nare</b><span class="tag" style="margin-left:auto">sonnet · medium</span></div>
+                  <div class="bub">P-512 sırada. Başlatayım mı?</div>
+                  <div class="bub me">Evet, Monster'da.</div>
+                  <div class="bub">🔥 Yapılıyor. Harness: zorluk 5, rol: arkauc.</div>
+                  <div style="margin-top:auto" class="kmp"><span class="mut">Nare'ye yaz…</span><div class="r"><span class="chip">Monster</span><span class="chip">claude</span><span class="chip">medium</span></div></div>
+                </div>
+              </div>
+              <div class="stt"><span><i class="dot a"></i> 1 iş yapılıyor</span><span>Kota %62</span><span>Harness ✓ 14/14</span><span style="margin-left:auto">Son yedek 02:10</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="not">
+          <p><span class="no">1</span><span><b>Menü çubuğu kalkar, yerine ⌘K komut paleti gelir.</b> Dosya/Düzen/Yardım menüleri bu uygulamada neredeyse hiç kullanılmıyor; palet hem yatay hem dikey alanı geri verir.</span></p>
+          <p><span class="no">2</span><span><b>Etkinlik çubuğu 6 etiketli bölüme dönüşür.</b> Anayasadaki B1..B6 bölümleri birebir: Nare, Pano, Ofis, Fabrika, Kota, Sistem. İkon + yazı, rozet sayıları, aktif bölümde turuncu işaret.</span></p>
+          <p><span class="no">3</span><span><b>Nare paneli 190 → 360 px, bağlam çipli.</b> Cihaz, araç ve efor seçici (Monster · claude · medium) girdi kutusunun hemen üstünde ve her zaman görünür. Otomatikte kilitli modeller (opus, xhigh) gri ve 🔒 ile.</span></p>
+          <p><span class="no">4</span><span><b>Durum çubuğu süs olmaktan çıkar:</b> yapılan iş sayısı, kota halkası, harness sonucu, son yedek. Artık "UTF-8" gibi editör bilgisi yok.</span></p>
+          <p><span class="no">5</span><span><b>Alt panel çekmeceye dönüşür:</b> varsayılan kapalı, <kbd>Ctrl+J</kbd> ile açılır. Terminal, çıktı ve kanıt tek yerde.</span></p>
+          <p><span class="no">6</span><span><b>Cila:</b> 4.5:1 kontrast (soluk metinler #8e978f → #a7b0a8), görünür odak halkası, 13 px alt sınırı, tek bir boşluk ölçeği (4/8/12/16/24), <code>prefers-reduced-motion</code>, <code>dil.css</code> değişkenleri tek kaynak ve <code>calisma.html</code>'in satır içi stilleri ve betikleri ayrı dosyalara.</span></p>
+        </div>
+      </div>
+
+      <div data-dev="tel">
+        <div class="phrow">
+          <div class="phcol">
+            <p class="etk"><span class="etiket er">ÖNCE</span> Telefon</p>
+            <div class="ph" style="filter:saturate(.7)">
+              <div style="height:14px"></div>
+              <div class="mn" style="display:flex;gap:6px;padding:3px 8px;color:var(--dim);font-size:8px;background:var(--sf)"><span>Dosya</span><span>Düzen</span><span>Görünüm</span></div>
+              <div style="display:flex;gap:2px;padding:3px 6px" class="mut mono"><span>calisma.html ×</span><span>PANO.md ×</span></div>
+              <div class="pgv"><div class="harita" style="flex:1;border:1px solid var(--line);border-radius:6px;position:relative;background:radial-gradient(var(--line) 1px,transparent 1px) 0 0/10px 10px"><b class="tag" style="position:absolute;left:10px;top:10px">pano</b><b class="tag" style="position:absolute;left:90px;top:44px">nare</b><b class="tag" style="position:absolute;left:30px;top:90px">ofis</b></div>
+                <div class="mut mono" style="font-size:8px">Nare paneli → kaydır…</div></div>
+              <div class="dock" style="padding:3px;border-top:1px solid var(--line)"><div style="min-height:24px;font-size:7px">▤</div><div style="min-height:24px;font-size:7px">⌕</div><div style="min-height:24px;font-size:7px">⎇</div><div style="min-height:24px;font-size:7px">▶</div><div style="min-height:24px;font-size:7px">N</div></div>
+            </div>
+          </div>
+          <div class="phcol">
+            <p class="etk"><span class="etiket ok">SONRA</span> Telefon (düzeltilmiş)</p>
+            <div class="ph">
+              <div class="pt"><span class="logo" style="font-size:14px">K<b>4</b></span><span class="chip"><i class="dot"></i>Monster</span><span class="chip" style="margin-left:auto">⌕</span></div>
+              <div class="pgv">
+                <div class="seg"><span class="on">Harita</span><span>Pano</span><span>Kuyruk</span></div>
+                <div class="harita" style="flex:1;border:1px solid var(--line);border-radius:12px;position:relative;background:radial-gradient(var(--line) 1px,transparent 1px) 0 0/12px 12px">
+                  <b class="btn" style="position:absolute;left:12px;top:12px;border-color:var(--ac)">Nare</b><b class="btn" style="position:absolute;left:100px;top:56px">Pano</b><b class="btn" style="position:absolute;left:30px;top:110px">Ofis</b></div>
+              </div>
+              <div class="fab">N</div>
+              <div class="dock"><div class="on"><span>🧠</span>Nare</div><div><span>📋</span>Pano</div><div><span>🏭</span>Fabrika</div><div><span>⚡</span>Kota</div><div><span>⋯</span>Daha</div></div>
+            </div>
+          </div>
+          <div class="phcol">
+            <p class="etk"><span class="etiket ok">SONRA</span> Nare alt sayfa olarak</p>
+            <div class="ph">
+              <div class="pt"><span class="logo" style="font-size:14px">K<b>4</b></span><span class="chip"><i class="dot"></i>Monster</span></div>
+              <div class="pgv" style="opacity:.35"><div class="is">Harita…</div></div>
+              <div class="sheet" style="top:70px;align-content:start">
+                <div style="display:flex;gap:6px;align-items:center"><span class="ikon on">N</span><b>Nare</b><span class="tag" style="margin-left:auto">sonnet·med</span></div>
+                <div class="bub">P-512 sırada. Başlatayım mı?</div>
+                <div class="bub me">Evet</div>
+                <div class="bub">🔥 Başladı. Kanıtı bitince göstereceğim.</div>
+                <div style="margin-top:auto;display:grid;gap:6px"><div class="r" style="display:flex;gap:5px"><span class="chip">Monster</span><span class="chip">claude</span><span class="chip">medium</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><div class="bub" style="flex:1;color:var(--dim)">Nare'ye yaz…</div><div class="mic">🎙</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="not">
+          <p><span class="no">1</span><span><b>Menü ve sekmeler telefonda tamamen yok.</b> Üstte tek satır: logo, cihaz durumu, arama.</span></p>
+          <p><span class="no">2</span><span><b>Alt gezinme 5 hedef, her biri en az 48×48 px,</b> ikon üstü yazı altı, güvenli alan (<code>env(safe-area-inset-bottom)</code>) payı ile.</span></p>
+          <p><span class="no">3</span><span><b>Nare = yüzen düğme + alt sayfa.</b> Her ekrandan bir dokunuşla açılır, üçte iki yüksekliğe çekilir, aşağı kaydırınca kapanır. Ses düğmesi (Gemini Live) klavyenin yanında.</span></p>
+          <p><span class="no">4</span><span><b>Sekme yerine segment kontrol</b> (Harita · Pano · Kuyruk): tek elle erişilen, kaydırmasız geçiş.</span></p>
+        </div>
+      </div>
+
+      <div class="kart">
+        <h3>Uygulama sırası (küçükten büyüğe, her adım tek başına yayınlanabilir)</h3>
+        <ol class="l" style="padding-left:20px;color:var(--dim)">
+          <li><b style="color:var(--fg)">Cila (yarım gün):</b> kontrast, odak, boşluk ölçeği, dokunma hedefi, <code>dil.css</code> değişkenleri.</li>
+          <li><b style="color:var(--fg)">Durum çubuğunu canlandır:</b> Pano, kota ve harness verisini bağla.</li>
+          <li><b style="color:var(--fg)">Nare panelini genişlet</b> ve cihaz/araç/efor çiplerini ekle.</li>
+          <li><b style="color:var(--fg)">Menü çubuğunu ⌘K'ya taşı.</b></li>
+          <li><b style="color:var(--fg)">Telefon: alt sayfa + yüzen düğme + segment.</b></li>
+        </ol>
+        <p class="mut" style="margin-top:8px"><b style="color:var(--fg)">Risk düşük, getiri orta.</b> Kullanıcı yeni bir şey öğrenmez ama editör metaforu yerinde kalır, yani kök sorun tam çözülmez.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SEÇENEK 2 ================= -->
+  <section data-opt="2">
+    <h2>2 · Baştan tasarlasam: <span style="color:var(--ac)">Nare Masası</span></h2>
+    <p class="lead">Tek cümlelik fikir: <b>uygulamanın merkezi bir konuşma ve onun etrafındaki canlı iş akışı olsun, dosya ağacı değil.</b> Kaan Nare'ye konuşur; Nare iş kartları, kanıt ve onay butonlarıyla cevap verir; yan tarafta Pano ve kota her an görünür. Aynı model telefonda tek sütuna iner, ama ses ve onay gibi telefonda güçlü olan eylemler öne çıkar.</p>
+
+    <div class="g3">
+      <div class="kart"><span class="etiket ac">İlke 1</span><h3 style="margin-top:10px">Konuşma birinci sınıf</h3><p class="mut">Her şey bir cümleyle başlar. Cevaplar düz metin değil; <b>iş kartı</b>, <b>diff</b>, <b>kanıt</b>, <b>onay/ret</b> gibi yapılandırılmış kartlardır.</p></div>
+      <div class="kart"><span class="etiket ac">İlke 2</span><h3 style="margin-top:10px">Kanıt olmadan "bitti" yok</h3><p class="mut">Anayasadaki "sıfır yüzeysel iş" kuralı arayüze işlenir: bir kart yalnızca <code>--kanit</code> ekli olduğunda yeşile döner. Kanıt tek dokunuşla açılır.</p></div>
+      <div class="kart"><span class="etiket ac">İlke 3</span><h3 style="margin-top:10px">Kota ve cihaz hep görünür</h3><p class="mut">Monster/Lenovo durumu ve kota halkası üst şeritte. Kilitli modeller (opus, xhigh) seçicide görünür ama 🔒, yani yanlışlıkla seçilemez.</p></div>
+      <div class="kart"><span class="etiket ac">İlke 4</span><h3 style="margin-top:10px">Ayrıntı isteğe bağlı</h3><p class="mut">Harita, terminal, dosya ve harness geçmişi sağdan açılan <b>çekmece</b>lerdir. Gerektiğinde derine inilir, varsayılanda sade kalır.</p></div>
+    </div>
+
+    <div class="sahne">
+      <div data-dev="masa">
+        <p class="etk"><span class="etiket ac">MASAÜSTÜ</span> Konuşma · Akış · Canlı Pano</p>
+        <div class="pc yeni">
+          <div class="rl">
+            <div class="av">N</div>
+            <div class="ikon on">🧠</div><div class="ikon">📋<em>4</em></div><div class="ikon">🏢</div><div class="ikon">🏭<em>2</em></div><div class="ikon">⚡</div><div class="ikon">🛡️</div>
+            <div style="margin-top:auto" class="ikon">⌘</div>
+          </div>
+          <div class="mer">
+            <div class="hd"><h4>Günaydın Kaan.</h4><span class="chip"><i class="dot"></i>Monster</span><span class="chip"><i class="dot"></i>Lenovo</span><span class="chip">🔒 opus/xhigh kilitli</span></div>
+            <div class="akis">
+              <div class="bub me">P-512 kuyruk sırasını düzelt, Monster'da yap.</div>
+              <div class="is">
+                <div class="hr"><i class="dot a"></i><b>P-512 · Kuyruk sırası düzeltmesi</b><span class="tag" style="margin-left:auto">B4-FABRIKA</span></div>
+                <div class="prog"><i style="width:68%"></i></div>
+                <div class="hr mut"><span>zorluk 5 · rol: arkauc · claude sonnet · medium</span></div>
+              </div>
+              <div class="is">
+                <div class="hr"><b>Kanıt · değişiklik</b><span class="chip" style="margin-left:auto">✓ py_compile</span><span class="chip">✓ json.tool</span></div>
+                <div class="diff"><div class="s">- kuyruk.sort(key=lambda k: k.ad)</div><div class="a">+ kuyruk.sort(key=lambda k: (k.oncelik, k.id))</div></div>
+                <div class="hr"><span class="btn p">✓ Onayla &amp; Bitir</span><span class="btn">Farkı aç</span><span class="btn">Geri al</span></div>
+              </div>
+            </div>
+            <div class="kmp">
+              <span class="mut">Nare'ye yaz ya da konuş…</span>
+              <div class="r"><span class="chip">🖥 Monster ▾</span><span class="chip">claude ▾</span><span class="chip">medium ▾</span><span class="chip">otomatik seç</span><span style="margin-left:auto" class="btn">📎</span><span class="mic" style="width:26px;height:26px;font-size:12px">🎙</span></div>
+            </div>
+          </div>
+          <div class="sg">
+            <h5>Canlı Pano</h5>
+            <div class="k" style="border-color:var(--ac)"><div style="display:flex;gap:5px;align-items:center"><i class="dot a"></i><b>YAPILIYOR</b><span class="tag" style="margin-left:auto">1</span></div><span>P-512 kuyruk sırası</span></div>
+            <div class="k"><div style="display:flex;gap:5px;align-items:center"><i class="dot w"></i><b>SIRADA</b><span class="tag" style="margin-left:auto">3</span></div><span class="mut">P-513 ses köprüsü testi</span><span class="mut">P-514 yedek doğrulama</span></div>
+            <div class="k"><div style="display:flex;gap:5px;align-items:center"><i class="dot"></i><b>BİTTİ · kanıtlı</b><span class="tag" style="margin-left:auto">17</span></div><span class="mut">P-507 arayüz lab ✓</span></div>
+            <h5 style="margin-top:2px">Kota</h5>
+            <div style="display:flex;gap:9px;align-items:center"><div class="halka"></div><div><b>Kademe 2</b><div class="mut">sonnet · medium<br>yenilenme 3 sa</div></div></div>
+          </div>
+        </div>
+        <div class="not">
+          <p><span class="no">1</span><span><b>Sol ray (64 px):</b> 6 bölüm, kısa; Nare simgesi tıklanınca konuşmaya döner. Rozetlerde bekleyen iş sayısı.</span></p>
+          <p><span class="no">2</span><span><b>Orta sütun = konuşma ve iş akışı.</b> Mesajlar arasında canlı iş kartı (ilerleme, harness rolü ve model), diff ve test sonucu satır içi görünür. Onay, ret ve geri alma doğrudan kartın üzerinde.</span></p>
+          <p><span class="no">3</span><span><b>Yazma alanı = komut merkezi.</b> Cihaz ▾, araç ▾, efor ▾ ve "otomatik seç" aynı satırda. Katman 2'nin kademe matrisi, öneri olarak çipte görünür ("zorluk 5 → sonnet·medium").</span></p>
+          <p><span class="no">4</span><span><b>Sağ sütun = canlı Pano ve kota.</b> Yapılıyor, Sırada, Bitti (kanıtlı). Karta tıklayınca çekmece açılır: kanıt, harness telemetrisi, terminal.</span></p>
+          <p><span class="no">5</span><span><b>⌘K her yerde.</b> Bölüm değiştir, iş ekle (<code>pano baslat</code>), cihaz seç. Bütün işlemlerin klavye karşılığı var.</span></p>
+        </div>
+      </div>
+
+      <div data-dev="tel">
+        <p class="etk" style="margin-top:8px"><span class="etiket ac">TELEFON</span> Tek sütun · alt dok · başparmak bölgesi</p>
+        <div class="phrow">
+          <div class="phcol">
+            <p class="etk">Nare</p>
+            <div class="ph">
+              <div class="pt"><div class="av" style="width:24px;height:24px;border-radius:8px;background:conic-gradient(var(--ac),var(--sage),var(--ac));display:grid;place-items:center;color:#121413;font-weight:900;font-size:12px">N</div><b>Nare</b><span class="chip" style="margin-left:auto"><i class="dot"></i>Monster</span></div>
+              <div class="pgv">
+                <div class="bub me">P-512'yi Monster'da başlat</div>
+                <div class="is"><div class="hr"><i class="dot a"></i><b>P-512 · Kuyruk sırası</b></div><div class="prog"><i style="width:68%"></i></div><span class="mut">sonnet · medium · arkauc</span></div>
+                <div class="is"><b>Kanıt hazır</b><div class="diff"><span class="s">- sort(ad)</span><br><span class="a">+ sort(öncelik,id)</span></div><div class="hr"><span class="btn p" style="flex:1;justify-content:center;min-height:30px">✓ Onayla</span><span class="btn" style="min-height:30px">Geri al</span></div></div>
+              </div>
+              <div style="padding:6px 10px;display:grid;gap:6px"><div style="display:flex;gap:4px"><span class="chip">Monster</span><span class="chip">claude</span><span class="chip">medium</span></div>
+                <div style="display:flex;gap:6px;align-items:center"><div class="bub" style="flex:1;color:var(--dim)">Yaz ya da konuş…</div><div class="mic">🎙</div></div></div>
+              <div class="dock"><div class="on"><span>🧠</span>Nare</div><div><span>📋</span>Pano</div><div><span>🏭</span>Fabrika</div><div><span>🛡️</span>Sistem</div></div>
+            </div>
+          </div>
+          <div class="phcol">
+            <p class="etk">Pano</p>
+            <div class="ph">
+              <div class="pt"><b>Pano</b><span class="chip" style="margin-left:auto">⚡ %62</span></div>
+              <div class="pgv">
+                <div class="seg"><span class="on">Yapılıyor 1</span><span>Sırada 3</span><span>Bitti</span></div>
+                <div class="is" style="border-color:var(--ac)"><div class="hr"><i class="dot a"></i><b>P-512</b><span class="tag" style="margin-left:auto">Monster·claude</span></div><span>Kuyruk sırası düzeltmesi</span><div class="prog"><i style="width:68%"></i></div></div>
+                <div class="is"><div class="hr"><i class="dot w"></i><b>P-513</b></div><span class="mut">Ses köprüsü testi · B1</span><div class="hr"><span class="btn p">Başlat</span><span class="btn">Cihaz ▾</span></div></div>
+                <div class="is"><div class="hr"><i class="dot w"></i><b>P-514</b></div><span class="mut">Yedek doğrulama · B6</span></div>
+              </div>
+              <div class="dock"><div><span>🧠</span>Nare</div><div class="on"><span>📋</span>Pano</div><div><span>🏭</span>Fabrika</div><div><span>🛡️</span>Sistem</div></div>
+            </div>
+          </div>
+          <div class="phcol">
+            <p class="etk">Sistem · Kota</p>
+            <div class="ph">
+              <div class="pt"><b>Sistem</b><span class="chip" style="margin-left:auto"><i class="dot"></i>Hepsi sağlıklı</span></div>
+              <div class="pgv">
+                <div class="is"><div class="hr"><div class="halka"></div><div><b>Kota · Kademe 2</b><div class="mut">sonnet·medium aktif<br>yenilenme 3 sa</div></div></div></div>
+                <div class="is"><div class="hr"><i class="dot"></i><b>Monster</b><span class="mut" style="margin-left:auto">100.124…</span></div><div class="hr"><i class="dot"></i><b>Lenovo</b><span class="mut" style="margin-left:auto">100.109…</span></div><span class="btn" style="justify-self:start">⏻ Uyandır (WoL)</span></div>
+                <div class="is"><div class="hr"><i class="dot"></i><b>Son yedek</b><span class="mut" style="margin-left:auto">02:10 · restic</span></div></div>
+                <div class="is"><div class="hr"><b>Kilitli</b></div><div class="hr"><span class="chip">🔒 opus</span><span class="chip">🔒 xhigh</span></div></div>
+              </div>
+              <div class="dock"><div><span>🧠</span>Nare</div><div><span>📋</span>Pano</div><div><span>🏭</span>Fabrika</div><div class="on"><span>🛡️</span>Sistem</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="not">
+          <p><span class="no">1</span><span><b>4 hedefli alt dok</b> (Nare, Pano, Fabrika, Sistem). Ofis ve Kota daha seyrek kullanıldığı için bu sekmelerin içinde başlık olarak yaşar; her şey başparmak menzilinde.</span></p>
+          <p><span class="no">2</span><span><b>Onay tek dokunuş.</b> Telefonun en güçlü yanı "bakıp onaylamak" olduğu için kanıt kartında büyük yeşil/turuncu buton var. Push bildirimi doğrudan bu karta açılır.</span></p>
+          <p><span class="no">3</span><span><b>Ses birinci sınıf:</b> Gemini Live köprüsü için büyük mikrofon, yazma kutusunun hemen yanında.</span></p>
+          <p><span class="no">4</span><span><b>Aynı bileşenler:</b> masaüstündeki kart, çip ve diff telefonda aynen kullanılır; yalnızca yerleşim değişir. Bakım iki kat ucuzlar.</span></p>
+        </div>
+      </div>
+
+      <div class="kart">
+        <h3>Tasarım dili</h3>
+        <div class="g3" style="margin-top:8px">
+          <div><p class="mut">Mevcut paleti sürdürürüm: zemin <code>#121413</code>, vurgu <code>#ff5a1f</code>, adaçayı <code>#c8dccb</code>. Turuncu <b>yalnızca</b> "şu an aktif / senden bir şey bekleniyor" anlamında kullanılır, böylece göz doğru yere gider.</p></div>
+          <div><p class="mut">Yazı: sistem sans (gövde) + mono (kimlik, kod, etiket). Dört boyut: 12 / 14 / 16 / 22. Dokunma hedefi ≥ 44 px, bilgi yoğunluğu masaüstünde yüksek, telefonda tek sütun.</p></div>
+          <div><p class="mut">Hareket: yalnızca durum değiştiren yerlerde (ilerleme, kartın yeşile dönmesi, çekmece). <code>prefers-reduced-motion</code> saygılı. Açık/koyu tema aynı değişkenlerle.</p></div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <span class="etiket" style="background:#121413;color:#eef0ea">#121413</span><span class="etiket" style="background:#1f2321;color:#eef0ea">#1f2321</span><span class="etiket" style="background:#c8dccb;color:#121413">#c8dccb</span><span class="etiket" style="background:#ff5a1f;color:#fff">#ff5a1f</span><span class="etiket" style="background:#a9d4b0;color:#121413">#a9d4b0</span><span class="etiket" style="background:#e8a33a;color:#121413">#e8a33a</span><span class="etiket" style="background:#e0665a;color:#121413">#e0665a</span>
+        </div>
+      </div>
+
+      <div class="kart">
+        <h3>Teknik temel</h3>
+        <ul class="l">
+          <li><b>Bileşenler:</b> <code>kart</code>, <code>cip</code>, <code>diff</code>, <code>kanit</code>, <code>komut-cubugu</code>, <code>cekmece</code>. Hepsi küçük Web Component ya da düz JS modülü; derleme adımı yok.</li>
+          <li><b>Veri:</b> <code>~/kasa/.pano/pano.json</code> ve <code>harness-gecmis.jsonl</code> için SSE/WebSocket akışı. Arayüz salt okur, eylemler <code>pano</code> CLI'ının API karşılığını çağırır.</li>
+          <li><b>Dosya yapısı:</b> <code>index.html</code> + <code>dil.css</code> (token'lar) + <code>bilesenler/*.js</code>. 300 KB'lık tek dosya yerine bölümlere ayrılmış yüklemeler, ilk açılış hızlı.</li>
+          <li><b>Eski arayüz kaybolmaz:</b> editör/harita görünümü "Çalışma alanı" çekmecesi olarak taşınır; ihtiyacı olan geri döner.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= KARŞILAŞTIRMA ================= -->
+  <h2>Karşılaştırma ve tavsiyem</h2>
+  <div class="kart sar"><table>
+    <tr><th></th><th>1 · Düzeltme</th><th>2 · Nare Masası</th></tr>
+    <tr><td><b>Çaba</b></td><td>Günler; parça parça yayınlanabilir</td><td>Birkaç hafta; paralel yürütülür</td></tr>
+    <tr><td><b>Risk</b></td><td>Düşük, alışkanlık bozulmaz</td><td>Orta, yeni mental model</td></tr>
+    <tr><td><b>Nare'nin yeri</b></td><td>Daha geniş yan panel</td><td>Uygulamanın merkezi</td></tr>
+    <tr><td><b>Telefon</b></td><td>Daha iyi bir masaüstü kopyası</td><td>Onay ve ses odaklı gerçek mobil akış</td></tr>
+    <tr><td><b>Kök sorun (editör metaforu)</b></td><td>Çözülmez, sadece hafifler</td><td>Ortadan kalkar</td></tr>
+  </table></div>
+  <div class="kart" style="margin-top:14px;border-color:var(--ac)">
+    <span class="etiket ac">Tavsiye</span>
+    <p style="margin-top:8px"><b>Önce 1'in ilk iki adımını (cila + canlı durum çubuğu) hemen yap,</b> çünkü bunlar 2'de de lazım olan token ve veri bağlarını hazırlar. Sonra 2'yi yeni bir <code>index.html</code> olarak yan yana kur, eski <code>calisma.html</code>'i "Çalışma alanı" çekmecesine dönüştür. Nare Masası hazır olunca varsayılan yap. Böylece hiçbir gün çalışan bir arayüzsüz kalmazsın.</p>
+  </div>
+
+  <footer>Not: Yukarıdaki maketler şematik HTML/CSS çizimleridir; gerçek veri ve bağlantı içermez. Renkler mevcut <code>dil.css</code> paletinden türetilmiştir.</footer>
+</div>
+
+<script>
+const b=document.body;
+document.querySelectorAll('[data-set]').forEach(btn=>btn.addEventListener('click',()=>{
+  const k=btn.dataset.set;b.dataset[k]=btn.dataset.v;
+  document.querySelectorAll('[data-set="'+k+'"]').forEach(x=>x.setAttribute('aria-pressed',x===btn));
+}));
+document.getElementById('tema').addEventListener('click',()=>{
+  const h=document.documentElement;h.dataset.tema=h.dataset.tema==='koyu'?'acik':'koyu';
+});
+</script>
+</body>
+</html>

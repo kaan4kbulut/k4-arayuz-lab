@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Antigravity — K4 Özgür Tasarım (1: Mevcut Düzeltme · 2: Sıfırdan Ambient OS)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #060709; color: #f3f4f6;
+  font-family: "Space Grotesk", sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column;
+}
+.secici-bar {
+  background: #0f1117; border-bottom: 1px solid #1f2430;
+  padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.secici-bar h1 { font-size: 15px; font-weight: 700; color: #38bdf8; margin-right: auto; }
+.hap-btn {
+  background: #171b26; color: #9ca3af; border: 1px solid #262c3a;
+  padding: 7px 14px; border-radius: 999px; cursor: pointer; font: 600 12.5px "Space Grotesk", sans-serif;
+}
+.hap-btn.aktif { background: #38bdf8; color: #030712; border-color: #38bdf8; }
+
+.icerik { flex: 1; padding: 20px; max-width: 1600px; width: 100%; margin: 0 auto; }
+
+/* ============================================================================
+   MOD 2 (SIFIRDAN YENİ): "NARE AMBIENT STREAM" (Klasik Dashboard Değil, Canlı Akış & Küre)
+   Neden? Bir kişisel AI OS'ta kullanıcı 40 tane kutuya bakmaz; Nare ile konuşur,
+   Nare sadece o an gereken kartı su yüzüne çıkarır (Zero-UI / Ambient Intelligence).
+   ============================================================================ */
+.ambient-sahne {
+  display: grid; grid-template-columns: 1fr 370px; gap: 24px; align-items: start;
+}
+@media (max-width: 1080px) { .ambient-sahne { grid-template-columns: 1fr; } }
+
+.ambient-masaustu {
+  min-height: 620px; border-radius: 24px;
+  background: radial-gradient(circle at 50% 28%, rgba(56,189,248,0.16) 0%, rgba(16,185,129,0.06) 35%, #07090e 75%);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 28px; display: flex; flex-direction: column; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.ust-nefes {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: "JetBrains Mono", monospace; font-size: 12px; color: #94a3b8;
+}
+.cihaz-nabiz {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  padding: 6px 14px; border-radius: 999px;
+}
+.nokta { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 12px #10b981; }
+
+/* Merkezde Nare Canlı Bilinç Halkası ve Yalnızca O Anki 3 Akış Kartı */
+.merkez-odak {
+  text-align: center; max-width: 760px; margin: 20px auto; display: grid; gap: 18px;
+}
+.kure {
+  width: 96px; height: 96px; margin: 0 auto; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #38bdf8, #0284c7 55%, #0f172a 100%);
+  box-shadow: 0 0 60px rgba(56,189,248,0.45), inset 0 0 20px rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font: 700 13px "JetBrains Mono", monospace; letter-spacing: .08em;
+}
+.nare-ses-metin {
+  font-size: 24px; font-weight: 600; line-height: 1.35; color: #f8fafc;
+}
+.akis-kartlari {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; text-align: left; margin-top: 8px;
+}
+.akis-kart {
+  background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 16px;
+  display: grid; gap: 8px; transition: transform .2s, border-color .2s; cursor: pointer;
+}
+.akis-kart:hover { transform: translateY(-4px); border-color: #38bdf8; }
+.akis-etiket { font: 600 11px "JetBrains Mono", monospace; color: #38bdf8; text-transform: uppercase; }
+
+/* Alt Yüzen Tek Komut kapsülü */
+.alt-kapsul {
+  max-width: 680px; width: 100%; margin: 0 auto;
+  background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56,189,248,0.35);
+  border-radius: 999px; padding: 8px 10px 8px 20px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+.alt-kapsul input {
+  flex: 1; background: transparent; border: 0; color: #fff; font: 14px "Space Grotesk", sans-serif; outline: none;
+}
+.alt-kapsul button {
+  background: #38bdf8; color: #020617; border: 0; border-radius: 999px;
+  padding: 10px 18px; font-weight: 700; cursor: pointer;
+}
+
+/* Mobil Ambient (370x720) */
+.ambient-mobil {
+  width: 370px; height: 680px; margin: 0 auto; border-radius: 40px;
+  border: 6px solid #1e293b;
+  background: radial-gradient(circle at 50% 22%, rgba(56,189,248,0.22), #07090e 65%);
+  padding: 18px; display: flex; flex-direction: column; justify-content: space-between;
+}
+</style>
+</head>
+<body>
+
+<div class="secici-bar">
+  <h1>✦ ANTIGRAVITY — ÖZGÜR K4 VİZYONU</h1>
+  <button class="hap-btn aktif" onclick="goster('yeni', this)">🚀 1. Baştan Yeni Tasarım: "Nare Ambient OS" (Zero-UI)</button>
+  <button class="hap-btn" onclick="goster('duzeltme', this)">🛠️ 2. Mevcut K4 Arayüzünü Nasıl Düzeltirdim? (Masaüstü + Telefon)</button>
+</div>
+
+<div class="icerik" id="alanYeni">
+  <div style="margin-bottom:14px;color:#94a3b8;font-size:13.5px">
+    <b>Felsefe:</b> Klasik sol menülü, 50 düğmeli "admin paneli / IDE" kalıbını tamamen çöpe atıyoruz. K4 aslında <b>Nare</b>'dir. Ekranın merkezinde Nare'nin canlı ses/düşünce küresi vardır; 86 kartlık Fabrika, 18 Pano işi ve 2 bilgisayar (Monster/Lenovo) arka planda sessizce akar, ekrana yalnızca <b>o saniye senin kararını veya dikkatini bekleyen 3 canlı kart</b> su yüzüne çıkar.
+  </div>
+
+  <div class="ambient-sahne">
+    <!-- Masaüstü Ambient OS -->
+    <div class="ambient-masaustu">
+      <div class="ust-nefes">
+        <div class="cihaz-nabiz"><span class="nokta"></span> MONSTER RTX 5070 Ti (53°C) ⇄ LENOVO 7/24</div>
+        <div class="cihaz-nabiz">PANO: 18/18 ✓ · FABRİKA: 86 KART · RESTIC: f6f90d57</div>
+      </div>
+
+      <div class="merkez-odak">
+        <div class="kure">AOEDE</div>
+        <div class="nare-ses-metin">"Kaan, Pano'daki 18 işin tamamı doğrulandı ve şifreli yedeğin alındı. Şu an dikkatini bekleyen 3 kartı önüne getirdim:"</div>
+
+        <div class="akis-kartlari">
+          <div class="akis-kart">
+            <span class="akis-etiket">⚖️ Yazar ≠ Denetçi Hazır</span>
+            <b style="font-size:15px">Önyüz Uzmanı Denetimi</b>
+            <p style="font-size:12.5px;color:#94a3b8">Claude Sonnet yazar, Codex bağımsız denetler ve JSON karnesi çıkarır.</p>
+          </div>
+          <div class="akis-kart">
+            <span class="akis-etiket" style="color:#10b981">🏭 Otonom Fabrika</span>
+            <b style="font-size:15px">86 Kuyruk Kartı</b>
+            <p style="font-size:12.5px;color:#94a3b8">kira.py pre-commit kilidi aktif; tek tuşla gece boyu üretim bandı.</p>
+          </div>
+          <div class="akis-kart">
+            <span class="akis-etiket" style="color:#f59e0b">🧠 ~/kasa İkinci Beyin</span>
+            <b style="font-size:15px">1.179 Not & 96 Araştırma</b>
+            <p style="font-size:12.5px;color:#94a3b8">1nn5 hafızası sindirildi; kırık wikilink denetimi hazır.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alt-kapsul">
+        <input value="Konuş veya #etiket ile Nare'ye görev ver (#ui-ux, #kodlama, #yerel)..." readonly>
+        <button>🎙️ Aoede ile Konuş</button>
+      </div>
+    </div>
+
+    <!-- Telefon Ambient OS -->
+    <div class="ambient-mobil">
+      <div style="display:flex;justify-content:space-between;font:11px 'JetBrains Mono',monospace;color:#94a3b8">
+        <span>● M+L AKTİF</span><span>18/18 BİTTİ</span>
+      </div>
+      <div style="text-align:center;display:grid;gap:12px;margin:10px 0">
+        <div class="kure" style="width:76px;height:76px;font-size:11px">NARE</div>
+        <div style="font-size:16px;font-weight:600">"Hangi uzmanla devam edelim Kaan?"</div>
+      </div>
+      <div style="display:grid;gap:10px">
+        <div class="akis-kart" style="padding:12px">
+          <span class="akis-etiket">01 · HIZLI EYLEM</span>
+          <b>⚖️ Denetimli İşçi Başlat</b>
+        </div>
+        <div class="akis-kart" style="padding:12px">
+          <span class="akis-etiket" style="color:#10b981">02 · DONANIM</span>
+          <b>⚡ Monster WoL + Sistem Doktoru</b>
+        </div>
+      </div>
+      <div class="alt-kapsul" style="padding:6px 8px 6px 14px">
+        <input value="Nare'ye söyle..." readonly style="font-size:12.5px">
+        <button style="padding:8px 14px;font-size:12px">🎙️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOD 1: MEVCUT ARAYÜZ DÜZELTMESİ -->
+<div class="icerik" id="alanDuzeltme" style="display:none">
+  <div style="background:#121413;border:1px solid #3a403c;border-radius:14px;padding:20px;font-family:'JetBrains Mono',monospace;display:grid;gap:16px">
+    <h2 style="color:#ff5a1f">🛠️ Mevcut K4 Arayüzünü (`calisma.html` + `dil.css`) Düzeltme Yaklaşımım</h2>
+    <p style="color:#c8dccb;font-size:13px">Mevcut Orion/ID350 arayüzündeki en büyük hata, sonradan eklenen Pano, Ofis, Fabrika ve Servisler ekranlarının <b>220px'lik dar alt panele sıkıştırılması</b> ve <b>sabit hex/emoji</b> kullanmasıdır. Düzeltilmiş masaüstü ve telefon hali:</p>
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start">
+      <!-- Düzeltilmiş Masaüstü -->
+      <div style="background:#121413;border:2px solid #3a403c;border-radius:8px;overflow:hidden">
+        <div style="background:#1f2321;padding:8px 12px;border-bottom:1px solid #3a403c;display:flex;justify-content:space-between;font-size:12px">
+          <b>k4 · Düzeltilmiş Orion Masaüstü (Alt Panel Şişkinliği Kaldırıldı)</b>
+          <span style="color:#a9d4b0">dil.css %100 Uyumlu</span>
+        </div>
+        <div style="display:grid;grid-template-columns:180px 1fr 260px;height:360px">
+          <div style="background:#181b19;border-right:1px solid #2a2f2c;padding:10px;font-size:11.5px;display:grid;gap:6px;align-content:start">
+            <b style="color:#8e978f">SAHNE SEKMELERİ</b>
+            <div style="background:#ff5a1f;color:#fff;padding:5px 8px;border-radius:4px">01 · Merkezi Pano</div>
+            <div style="padding:5px 8px">02 · Ofis (10 Uzman)</div>
+            <div style="padding:5px 8px">03 · Fabrika (86 Kart)</div>
+            <div style="padding:5px 8px">04 · Beyin Haritası</div>
+            <div style="padding:5px 8px">05 · Servisler & Doktor</div>
+          </div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+            <div style="background:#1f2321;border:1px solid #3a403c;border-radius:6px;padding:12px">
+              <div style="display:flex;justify-content:space-between"><b style="color:#eef0ea">P-202 · Önyüz & Denetçi Kapısı</b><span style="color:#a9d4b0">BİTTİ</span></div>
+              <div style="color:#8e978f;font-size:11.5px;margin:6px 0">Sabit hex ve emojiler temizlendi; yalnız --surface, --ok ve --accent kullanılıyor.</div>
+              <button style="background:#ff5a1f;color:#fff;border:0;border-radius:4px;padding:5px 10px;font:inherit">Denetimli Çalıştır</button>
+            </div>
+            <div style="margin-top:auto;background:#1a1d1b;border:1px solid #3a403c;border-radius:6px;padding:8px;font-size:11px;color:#a9d4b0">
+              Alt şerit artık yalnız 1 satırlık Canlı Git Diff ve Terminal özetidir.
+            </div>
+          </div>
+          <div style="background:#181b19;border-left:1px solid #2a2f2c;padding:10px;font-size:11.5px">
+            <b style="color:#ff5a1f">NARE SOHBET</b>
+            <p style="color:#8e978f;margin-top:8px">Sağ çekmece sabit kalır; orta alan artık bölünmez.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Düzeltilmiş Telefon -->
+      <div style="background:#121413;border:4px solid #1f2321;border-radius:24px;height:420px;display:flex;flex-direction:column;overflow:hidden">
+        <div style="background:#1f2321;padding:8px 12px;font-size:11.5px;display:flex;justify-content:space-between">
+          <b>k4 · Mobil</b><span style="color:#a9d4b0">18/18</span>
+        </div>
+        <div style="padding:10px;flex:1;display:grid;gap:8px;align-content:start;font-size:11.5px">
+          <div style="background:#1f2321;border:1px solid #3a403c;border-radius:6px;padding:10px">
+            <b>Tek Sütun Kart Akışı</b>
+            <p style="color:#8e978f;margin-top:4px">Tablolar ve 4 sütun mobilde kaldırıldı; 44px başparmak düğmeleri eklendi.</p>
+          </div>
+        </div>
+        <div style="height:48px;background:#1f2321;border-top:1px solid #3a403c;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;align-items:center;font-size:11px">
+          <span style="color:#ff5a1f;font-weight:700">Nare</span><span>Pano</span><span>İzle</span><span>Sistem</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function goster(mod, btn) {
+  document.querySelectorAll(".hap-btn").forEach(b => b.classList.remove("aktif"));
+  btn.classList.add("aktif");
+  document.getElementById("alanYeni").style.display = mod === "yeni" ? "block" : "none";
+  document.getElementById("alanDuzeltme").style.display = mod === "duzeltme" ? "block" : "none";
+}
+</script>
+</body>
+</html>
+
