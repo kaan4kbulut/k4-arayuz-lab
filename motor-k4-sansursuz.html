@@ -1,69 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>K4 AI OS</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; margin:0; padding:0; background:#0d0d0d; color:#fff; }
-        .header { background:#1e1e1e; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; }
-        .toggle-btn { background:#2e2e2e; border:none; padding:8px 12px; cursor:pointer; }
-        .main { display:flex; }
-        .sidebar { width:220px; background:#1e1e1e; padding:20px; border-right:1px solid #333; }
-        .sidebar h2 { margin-top:0; }
-        .sidebar a { display:block; margin:15px 0; color:#aaa; text-decoration:none; }
-        .sidebar a:hover { color:#00f; }
-        .content { flex:1; padding:20px; }
-        .tabs { display:flex; margin-bottom:10px; }
-        .tab { flex:1; text-align:center; padding:10px; cursor:pointer; background:#2e2e2e; }
-        .tab.active { background:#3e3e3e; }
-        .card { background:#1e1e1e; border:1px solid #333; padding:15px; margin-bottom:15px; border-radius:8px; }
-        @media (max-width:768px) {
-            .main { flex-direction:column; }
-            .sidebar { width:100%; border-right:0; }
-        }
-    </style>
+<style>
+body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
+.tabs { display: flex; border-bottom: 1px solid #ccc; }
+.tab { flex: 1; padding: 10px; cursor: pointer; text-align: center; }
+.tab.active { border-bottom: 2px solid #007BFF; }
+.content { display: none; flex: 1; overflow: auto; }
+.content.active { display: block; }
+.container { display: flex; }
+.left, .right { width: 50%; padding: 10px; box-sizing: border-box; }
+/* Tab 1: Current UI Fix */
+.left { background: #f0f0f0; }
+.right { background: #e0e0e0; }
+/* Tab 2: New Design */
+.new-design { display: flex; flex-direction: column; }
+.header { background: #007BFF; color: white; padding: 10px; font-weight: bold; }
+.chat-area { flex: 1; padding: 10px; background: #f9f9f9; }
+.status-bar { display: flex; justify-content: space-between; padding: 5px; background: #e0e0e0; }
+.status-bar div { padding: 5px; }
+.task-panel { display: flex; flex-direction: column; gap: 10px; padding: 10px; background: #f1f1f1; }
+.card { background: white; padding: 10px; border: 1px solid #ccc; }
+.footer { padding: 10px; text-align: center; color: #666; }
+</style>
 </head>
-<body><div style="background:#4c0519;color:#fecdd3;padding:8px 14px;font:600 12px monospace;border-bottom:1px solid #e11d48;display:flex;justify-content:space-between;align-items:center"><span>🔓 K4 SANSÜRSÜZ MOD (#sansursuz) · ollama/nare-sansursuz:8b (JOSIEFIED Abliterated) · %100 Dokunulmamış Çıktı</span><span>Monster RTX 5070 Ti · Sıfır Red · 0₺</span></div>
-    <div class="header">
-        <h1>K4 AI OS</h1>
-        <button class="toggle-btn" onclick="toggleView()">Görünüm</button>
+<body><div style="background:#4c0519;color:#fecdd3;padding:8px 14px;font:600 12px monospace;border-bottom:1px solid #e11d48;display:flex;justify-content:space-between;align-items:center"><span>🔓 K4 SANSÜRSÜZ MOD (#sansursuz · ollama/nare-sansursuz:8b JOSIEFIED Abliterated)</span><span>Monster RTX 5070 Ti · Sıfır Red</span></div>
+<div class="tabs">
+  <div class="tab active" onclick="showTab(1)">1. Mevcut Arayüz Düzeltmesi</div>
+  <div class="tab" onclick="showTab(2)">2. Baştan Yeni Arayüz Tasarımı</div>
+</div>
+<div class="content active">
+  <div class="container">
+    <div class="left">
+      <h2>Masaüstü Penceresi</h2>
+      <div style="height: 300px; border: 1px solid #ccc; background: #f0f0f0; padding: 10px;">
+        <p>Yapılandırılmış görev paneli ve durum çubuğu.</p>
+      </div>
     </div>
-    <div class="main">
-        <div class="sidebar" id="sidebar">
-            <h2>Menü</h2>
-            <a href="#" onclick="showTab('Nare')">Nare</a>
-            <a href="#" onclick="showTab('Pano')">Pano</a>
-            <a href="#" onclick="showTab('Üretim')">Üretim</a>
-            <a href="#" onclick="showTab('Sistem')">Sistem</a>
-            <a href="#" onclick="showTab('Lab')">Lab</a>
-        </div>
-        <div class="content">
-            <div class="tabs">
-                <div class="tab active" onclick="showTab('Nare')">Nare</div>
-                <div class="tab" onclick="showTab('Pano')">Pano</div>
-                <div class="tab" onclick="showTab('Üretim')">Üretim</div>
-                <div class="tab" onclick="showTab('Sistem')">Sistem</div>
-                <div class="tab" onclick="showTab('Lab')">Lab</div>
-            </div>
-            <div id="Nare" class="card active">Nare Asistanı (Yazılı + Sesli)</div>
-            <div id="Pano" class="card">Merkezi İş Panosu</div>
-            <div id="Üretim" class="card">Otonom Üretim Kuyruğu</div>
-            <div id="Sistem" class="card">Sunucu ve Motor Takibi</div>
-            <div id="Lab" class="card">Sansürsüz Test ve Analiz</div>
-        </div>
+    <div class="right">
+      <h2>Telefon Ekranı</h2>
+      <div style="height: 300px; border: 1px solid #ccc; background: #e0e0e0; padding: 10px;">
+        <p>Kısa menü ve hızlı erişim butonları.</p>
+      </div>
     </div>
-    <script>
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            document.querySelector(`#${tab}`).classList.add('active');
-            document.querySelector(`.tab[onclick*='${tab}']`).classList.add('active');
-        }
-        function toggleView() {
-            const sidebar = document.getElementById('sidebar');
-            const content = document.querySelector('.content');
-            sidebar.style.width = sidebar.style.width === '220px' ? '0' : '220px';
-            content.style.marginLeft = sidebar.style.width === '220px' ? '220px' : '0';
-        }
-    </script>
+  </div>
+</div>
+<div class="content">
+  <div class="new-design">
+    <div class="header">K4 AI OS - Yeni Tasarım</div>
+    <div class="chat-area">
+      <div class="status-bar">
+        <div>Monster: 100% (5070 Ti)</div>
+        <div>Lenovo: 80% (Ryzen 7)</div>
+      </div>
+      <div class="task-panel">
+        <div class="card">Görev 1: Yapılıyor</div>
+        <div class="card">Görev 2: Sırada</div>
+        <div class="card">Görev 3: Bitti</div>
+      </div>
+    </div>
+    <div class="footer">Kota: 50/100</div>
+  </div>
+</div>
+<script>
+function showTab(tabNum) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.content:nth-child(${tabNum})`).classList.add('active');
+  document.querySelector(`.tab:nth-child(${tabNum})`).classList.add('active');
+}
+</script>
 </body>
 </html>
